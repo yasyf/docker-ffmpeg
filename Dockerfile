@@ -45,6 +45,7 @@ ENV \
   OPUS=1.5.2 \
   RAV1E=0.7.1 \
   SHADERC=v2024.1 \
+  SRT=1.5.3 \
   SVTAV1=2.1.0 \
   THEORA=1.1.1 \
   VORBIS=1.3.7 \
@@ -105,7 +106,6 @@ RUN \
     libxml2-dev \
     libxrandr-dev \
     libxshmfence-dev \
-    libsrt-openssl-dev \
     libxxf86vm-dev \
     llvm-18-dev \
     llvm-spirv-18 \
@@ -783,6 +783,23 @@ RUN \
   echo "**** compiling zimg ****" && \
   cd /tmp/zimg && \
   ./autogen.sh && \
+  ./configure \
+    --disable-static \
+    --enable-shared && \
+  make && \
+  make install
+
+RUN \
+  echo "**** grabbing libsrt ****" && \
+  mkdir -p /tmp/libsrt && \
+  git clone \
+    --branch v${SRT} --depth 1 \
+    https://github.com/Haivision/srt.git \
+    /tmp/srt
+RUN \
+  echo "**** compiling srt ****" && \
+  cd /tmp/srt && \
+  apt-get install -y tclsh && \
   ./configure \
     --disable-static \
     --enable-shared && \
