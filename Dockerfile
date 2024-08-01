@@ -105,6 +105,7 @@ RUN \
     libxml2-dev \
     libxrandr-dev \
     libxshmfence-dev \
+    libsrt-openssl-dev \
     libxxf86vm-dev \
     llvm-18-dev \
     llvm-spirv-18 \
@@ -790,18 +791,8 @@ RUN \
 
 # main ffmpeg build
 RUN \
-  echo "**** Versioning ****" && \
-  if [ -z ${FFMPEG_VERSION+x} ]; then \
-    FFMPEG=${FFMPEG_HARD}; \
-  else \
-    FFMPEG=${FFMPEG_VERSION%-cli}; \
-  fi && \
   echo "**** grabbing ffmpeg ****" && \
-  mkdir -p /tmp/ffmpeg && \
-  echo "https://ffmpeg.org/releases/ffmpeg-${FFMPEG}.tar.bz2" && \
-  curl -Lf \
-    https://ffmpeg.org/releases/ffmpeg-${FFMPEG}.tar.bz2 | \
-    tar -jx --strip-components=1 -C /tmp/ffmpeg
+  git clone https://git.ffmpeg.org/ffmpeg.git /tmp/ffmpeg
 RUN \
   echo "**** compiling ffmpeg ****" && \
   cd /tmp/ffmpeg && \
@@ -829,6 +820,7 @@ RUN \
     --enable-libplacebo \
     --enable-librav1e \
     --enable-libshaderc \
+    --enable-libsrt \
     --enable-libsvtav1 \
     --enable-libtheora \
     --enable-libv4l2 \
